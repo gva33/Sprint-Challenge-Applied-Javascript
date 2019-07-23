@@ -19,44 +19,44 @@
 // Create a card for each of the articles and add the card to the DOM.
 
 const articles = document.querySelector('.cards-container')
-const promise = axios.get('https://lambda-times-backend.herokuapp.com/articles')
 
-promise
+
+axios.get('https://lambda-times-backend.herokuapp.com/articles')
 .then (data => {
-   console.log('RESPONSE',data.data.articles)
-   const entries = data.data.articles
-   Object.keys(entries).forEach(function (y) {
-    articles.appendChild(newComponent(entries[y]))
-    console.log(entries[y])
-   })
-})
+    const articlesData = data.data.articles;
+        Object.keys(articlesData).forEach(topic => {
+            articlesData[topic].forEach(article => {
+                articles.appendChild(cardMaker(article));
+            });
+        });
+    })
+
 .catch(error => {
     console.log('Error')
 })
 
-function newComponent(headliner,authorA,authorPhoto){
+function cardMaker(article) {
+
     const card = document.createElement('div');
     const headline = document.createElement('div');
     const author = document.createElement('div');
-    const img = document.createElement('img');
-    const container = document.createElement('div');
-    const authorName = document.createElement('span');
-
+    const imgCont = document.createElement('div');
+    const imgUrl = document.createElement('img');
+    const authName = document.createElement('span');
+    
     card.classList.add('card');
     headline.classList.add('headline');
     author.classList.add('author');
-    container.classList.add('img-container');
+    imgCont.classList.add('img-container');
     
+    headline.textContent = `${article.headline}`;
+    imgUrl.src = `${article.authorPhoto}`;
+    authName.textContent = `By ${article.authorName}`;
+
     card.appendChild(headline);
     card.appendChild(author);
-    author.appendChild(container);
-    author.appendChild(authorName);
-    container.appendChild(img);
-
-    headline.textContent = headliner;
-    author.textContent = authorA;
-    img.src = authorPhoto;
-
+    author.appendChild(imgCont);
+    imgCont.appendChild(imgUrl);
+    author.appendChild(authName);
     return card;
-
-}
+} 
